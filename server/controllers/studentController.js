@@ -12,8 +12,16 @@ const { logActivity } = require('./auditController');
 // @route   GET /api/students
 exports.getStudents = async (req, res) => {
   try {
-    const { branch, search, placed } = req.query;
+    const { branch, search, placed, archived } = req.query;
     let query = { role: 'student' };
+    
+    // By default, do not show archived (graduated) students unless explicitly requested
+    if (archived === 'true') {
+      query.isArchived = true;
+    } else {
+      query.isArchived = false;
+    }
+
     if (branch) query.branch = branch;
     if (placed === 'true') query.isPlaced = true;
     if (placed === 'false') query.isPlaced = false;
